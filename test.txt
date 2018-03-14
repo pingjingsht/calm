@@ -1,4 +1,8 @@
 adlskjf;aksjdf ;akjsd f;alj
+<<<<<<< Updated upstream
 zengjiayihang这里正在修改
+=======
+zengjiayihang这里要修改啦
+>>>>>>> Stashed changes
 123123,Creating a new branch is quick AND simple
 测试合并
