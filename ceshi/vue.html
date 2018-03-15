@@ -2,17 +2,94 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.14/dist/vue.js"></script>
+<script src="lodash.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 
 <div id="app">
   <p>Using mustaches: {{ rawHtml }}</p>
   <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+  <button v-bind:disabled="isButtonDisabled">Button</button>
+  <button @click="myOnClick">查看时间</button>
+  <p v-if="seen">现在你看到我了</p>
+  <p>计算属性展示: "{{ reversedMessage }}"</p>
+  <p>计算属性展示（当前时间会变化吗）: "{{ now }}"</p>
+
+  <!--侦听器实例s-->
+  <div id="watch-example">
+    <p>
+      Ask a yes/no question:
+      <input v-model="question">
+    </p>
+    <p>{{ answer }}</p>
+  </div>
+  <!--侦听器实例e-->
+
+  <!--条件渲染s-->
+  <div v-if="ok">ok</div>
+  <div v-else>no</div>
+  <!--条件渲染e-->
 </div>
 
 <script>
-var app = new Vue({
+var vm = new Vue({
   el: '#app',
   data: {
-    rawHtml: '<span style="color:red">这里显示红色字体</span>'
+    rawHtml: '<span style="color:red">这里显示红色字体</span>',
+    isButtonDisabled : true,
+    seen : true,
+    message: 'hello',
+    question: '',
+    answer: '请输入',
+    ok:true
+  },
+  computed: {
+    //只有当依赖的message改变的时候函数才会再次执行
+    reversedMessage: function(){
+      return this.message.split('').reverse().join('');
+    },
+
+    //刷新页面的时候会重新获取页面，但是在其他地方再次调用now属性的时候就不会再次执行函数了，因为没有其他可改变的依赖
+    now: function () {
+      return Date.now();
+    }
+  },
+  methods: {
+    myOnClick: function () {
+      console.log(this.now);
+    },
+    getAnswer: _.debounce(
+      // `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+      // 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+      // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+      // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
+      // 请参考：https://lodash.com/docs#debounce
+      function () {
+        if (this.question.indexOf('?') === -1) {
+          this.answer = 'Questions usually contain a question mark. ;-)'
+          return
+        }
+        this.answer = 'Thinking...'
+        var vm = this
+        axios.get('https://yesno.wtf/api')
+          .then(function (response) {
+            vm.answer = _.capitalize(response.data.answer)
+          })
+          .catch(function (error) {
+            vm.answer = 'Error! Could not reach the API. ' + error
+          })
+      },
+      // 这是我们为判定用户停止输入等待的毫秒数
+      500
+    )
+  },
+  watch:{
+    //在question属性上加一个侦听器
+    question:function(newQuestion, oldQuestion){
+      this.answer='思考中。。。';
+      this.getAnswer();
+    }
   }
 })
+
 </script>
