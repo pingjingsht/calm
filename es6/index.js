@@ -12,7 +12,6 @@ function jspang(...arg){
     console.log(arg[1]);
     console.log(arg[2]);
     console.log(arg[3]);
- 
 }
 jspang(1,2,3);
 
@@ -97,3 +96,115 @@ console.log(Number.MAX_SAFE_INTEGER);
 console.log(Number.MIN_SAFE_INTEGER);
 //安全整数判断isSafeInteger( )
 console.log(Number.isSafeInteger(maxi+1));//false
+
+/**
+ * 数组
+ */
+//json数组格式转为普通数组，冒号左侧的数字为数组的游标，从0开始
+let json3 = {
+    '0' : 'ceshi1',
+    '1' : '测试2',
+    '2' : '测试3',
+    length : 3
+}
+let arr3 = Array.from(json3);
+console.log('数组测试:'+arr3);
+
+//文本或者变量转换成数组
+let arr4 = Array.of(3,4,5,'测试数组');
+console.log(arr4);
+
+//find()实例方法，从数字中查找
+let arr5 = [1,2,3,4,5,6,7];
+console.log(
+    //valeu当前查找的值，index数组的下标，arr5被查找的数组
+    arr5.find(function(value,index,arr5){
+        return value>5;
+    })
+);
+
+//fill()，把数组进行填充，它接收三个参数，第一个参数是填充的变量，
+//第二个是开始填充的位置，第三个是填充到的位置(这里参数传的是5，其实是把第4位进行了填充)
+let arr6=[0,1,2,3,4,5,6,7,8,9];
+arr6.fill('jspang',2,5);
+console.log(arr6);
+
+//for...of循环
+for (let iterator of arr6) {
+    console.log(iterator);
+}
+//输出索引
+for (let tindex of arr6.keys()) {
+    console.log(tindex);
+}
+//输出索引和内容
+for (let [index,val] of arr6.entries()) {
+    console.log(index+':'+val);
+}
+//entries( )实例方法：next()手动跳转到下一个值
+//list.next().value返回的是一个数组，有两个元素，第一个元素是list的下标，第二个是list的值
+let list=arr6.entries();
+console.log(list.next().value);
+console.log(list.next().value);
+console.log(list.next().value[1]);
+
+/**
+ * 箭头函数及扩展
+ */
+//主动抛出错误
+function add(a,b=1){
+    if (a == 0) {
+        throw new Error('a this error');
+    }
+}
+//console.log(add(0));
+
+//箭头函数,a+b在这里为返回值,箭头函数中不允许使用new
+var add2 = (a,b=10)=>a+b;
+console.log(add2(5));
+
+//箭头函数，函数体为多行
+var add3 = (a,b=10)=>{
+    a = a+10;
+    return a+b;
+}
+console.log(add3(5));
+
+
+/**
+ * 函数
+ */
+//对象的函数解构，避免函数在调用的时候一个一个的传入参数
+let json4 = {
+    a:'calm',
+    b:'平静'
+}
+function fun({a,b='pingjing'}) {
+    console.log(a,b);
+}
+fun(json4);
+
+//数组的函数结构
+let arr7 = ['calm','pingjing','calm2'];
+function fun2(a,b,c,d) {
+    console.log(a,b,c,d);
+}
+fun2(...arr7);
+//in的用法(对象),判断b这个属性是否存在
+console.log('b' in json4);
+//in的用法（数组），判断0这个下标对应的位置是否有值
+let arr8 = [,,,,,,,,,];
+console.log(0 in arr7);
+console.log(0 in arr8);
+//数组遍历forEach，自动过滤空元素
+let arr9 = ['aaa','bbb',,'ccc'];
+arr9.forEach((val,index) => console.log(index,val));
+arr9.forEach(val=>console.log(val));
+//数组遍历filter
+arr9.filter(val=>console.log(val));
+//数组遍历+替换map
+console.log(arr9.map(val=>'web'));
+//数组转字符串
+console.log('数组转字符串:'+arr9.toString());
+//数组转字符串，并把逗号替换为|
+console.log(arr9.join('|'));
