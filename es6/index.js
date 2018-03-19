@@ -208,3 +208,191 @@ console.log(arr9.map(val=>'web'));
 console.log('数组转字符串:'+arr9.toString());
 //数组转字符串，并把逗号替换为|
 console.log(arr9.join('|'));
+
+/**
+ * 对象
+ */
+//对象赋值
+let name='calm';
+let skill='web';
+let obj = {name,skill};
+console.log(obj);
+
+//key值的构建
+let key='skill';
+let obj1 = {
+    [key] : 'web'
+};
+console.log(obj1);
+
+//自定义对象方法
+let obj2 = {
+    add:function (a,b) {
+        return a+b;
+    }
+}
+console.log(obj2.add(4,5));
+
+//===同值相等，is严格相等
+console.log(+0 === -0);  //true 他们的值都为0
+console.log(NaN === NaN ); //false NaN为不确定对象，所以不相等
+console.log(Object.is(+0,-0)); //false
+console.log(Object.is(NaN,NaN)); //true
+
+//Object.assign()合并对象
+let oa = {a:'calm'};
+let ob = {b:'平静'};
+let oc = {c:'123'}
+let od = Object.assign(oa,ob,oc);
+console.log(od);
+
+/**
+ * Set和WeakSet数据结构
+ */
+//set不是数组，而是数据结构，set中不允许有重复内容
+let setArray = new Set(['calm','pingjingsht','calm']);
+console.log(setArray);
+//追加add
+setArray.add('测试追加');
+//删除delete
+setArray.delete('pingjingsht');
+console.log(setArray);
+//查找has
+console.log(setArray.has('calm'));
+//清空所有元素
+//setArray.clear()
+console.log(setArray);
+//循环
+for (let temp of setArray) {
+    console.log('for of:'+temp);
+}
+setArray.forEach((temp) => {
+    console.log('for each:'+temp);
+});
+//set的大小
+console.log(setArray.size);
+//WeakSet,new函数不允许直接在括号中赋值
+let weakSet = new WeakSet();
+let obj3 = {a:'calm',b:'pingjingsht'};
+let obj4 = {a:'asdf',b:'pingjingsht'};
+weakSet.add(obj3);
+weakSet.add(obj4);
+console.log(weakSet);//由于obj3,obj4是两个不同的对象，即便他们里面的属性值相等，在被放到weakset中后，也不会被去重
+
+
+/**
+ * Map
+ */
+let json = {
+    name:'jspang',
+    skill:'web'
+}
+console.log(json.name);
+ 
+var map=new Map();
+//增加值
+map.set(json,'iam');
+map.set('password','123456');
+console.log(map);
+//取值get(通过key取值)
+console.log(map.get(json));
+//size属性
+console.log(map.size);
+//查找是否存在has(通过key查找)
+console.log(map.has(json));
+//删除delete
+map.delete(json);
+console.log(map);
+//清楚所有元素clear
+map.clear();
+console.log(map);
+
+/**
+ * Proxy预处理
+ */
+var obj5={
+    add:function(val){
+        return val+10;
+    },
+    name:'I am Jspang'
+    
+};
+
+//声明Proxy
+//第一个花括号就相当于我们方法的主体，后边的花括号就是Proxy代理处理区域，相当于我们写钩子函数的地方
+let pro = new Proxy({
+    add:function(val){
+        return val+10;
+    },
+    name:'I am Jspang'
+},{
+    //target就是name:'I am Jspang'，key就是name，如果没有return target[key]，后面的console则无法打印出来pro.name
+    get:function (target,key,property) {
+        console.log('进入get的预处理');
+        return target[key];//由于key是参数，你并不知道key具体代表的是那个参数，所以需要用target[key]取代target.name这样的形式
+    },
+    //target:目标值,key：目标的Key值,value：要改变的值,receiver：改变前的原始值
+    set:function (target,key,value,receiver) {
+        console.log(`进入set的预处理 ${key} = ${value}`);
+        return target[key] = value+'test';
+    }
+});
+console.log(`get的预处理：${pro.name}`);
+pro.name='calm';
+console.log(pro.name);
+
+//apply的使用，apply的作用是调用内部的方法，它使用在方法体是一个匿名函数时
+//目标，对谁预处理
+let target = function (params) {
+        return 'this is function';
+};
+//预处理部分
+let handler = {
+    apply(target,ctx,args){
+        console.log('拦截方法');
+        return Reflect.apply(...arguments);
+    }
+};
+let pro2 = new Proxy(target,handler);
+console.log(pro2());
+
+
+/**
+ * promise对象的使用
+ */
+let state = 1;
+//resolve成功，reject失败
+function step1(resolve,reject){
+    console.log('1.开始-洗菜做饭');
+    if(state==1){
+        resolve('洗菜做饭--完成');
+    }else{
+        reject('洗菜做饭--出错');
+    }
+}
+function step2(resolve,reject){
+    console.log('2.开始-坐下来吃饭');
+    if(state==1){
+        resolve('坐下来吃饭--完成');
+    }else{
+        reject('坐下来吃饭--出错');
+    }
+}
+function step3(resolve,reject){
+    console.log('3.开始-收拾桌子洗完');
+     if(state==1){
+        resolve('收拾桌子洗完--完成');
+    }else{
+        reject('收拾桌子洗完--出错');
+    }
+}
+
+new Promise(step1).then(function (val) {
+    console.log(val);
+    return new Promise(step2);
+}).then(function (val) {
+    console.log(val);
+    return new Promise(step3);
+}).then(function (val) {
+    console.log(val);
+});
