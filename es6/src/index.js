@@ -431,8 +431,8 @@ let pjsht = new htmler;
 pjsht.name('类的继承');
 
 /**
- * 模块化操作
+ * 模块化操作11
  */
-//import {tempa,square} from './temp';
-//console.log(tempa);
-//console.log(square(5));
+import {tempa,square} from './temp';
+console.log(tempa);
+console.log(square(5));

@@ -5,16 +5,23 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"server": "live-server ./ --port=9090"
+    "server": "live-server ./ --port=9090",
+    "build": "babel src/index.js -o dist/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pingjingsht/calm.git"
-  },
+  "repository": "git+https://github.com/pingjingsht/calm.git",
   "author": "calm",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pingjingsht/calm/issues"
   },
-  "homepage": "https://github.com/pingjingsht/calm#readme"
+  "homepage": "https://github.com/pingjingsht/calm#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^4.1.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-runtime": "^6.26.0"
+  }
 }
