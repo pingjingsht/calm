@@ -1,2 +1,3 @@
 
-document.getElementById('title').innerHTML='Hello Webpack!!!!!123';
+import css from './css/index.css';
+document.getElementById('title').innerHTML='Hello Webpack!!!!!测试编译!';

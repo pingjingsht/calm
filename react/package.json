@@ -4,12 +4,19 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.0.7",
+    "mini-css-extract-plugin": "^0.2.0",
+    "style-loader": "^0.20.3",
+    "url-loader": "^1.0.1",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12",
     "webpack-dev-server": "^3.1.1"
   },
   "scripts": {
     "start": "webpack",
-    "server":"webpack-dev-server --inline --mode development"
-  }
+    "server": "webpack-dev-server --mode development"
+  },
+  "dependencies": {}
 }
