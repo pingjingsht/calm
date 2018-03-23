@@ -2,10 +2,19 @@ const path = require('path');
 const uglify = require('uglifyjs-webpack-plugin');
 const htmlPlugin= require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var website ={
-    publicPath:"http://localhost:1717/"
+
+//这里的build是服务启动时package.json中scripts对象传递进来的
+if(process.env.type== "build"){
+    var website={
+        publicPath:"http://localhsot:9999/"
+    }
+}else{
+    var website={
+        publicPath:"http://localhost:1717/"
+    }
 }
 module.exports={
+    devtool: 'eval-source-map',
     //入口文件的配置项
     entry:{
         entry:__dirname + '/src/entry.js'
@@ -31,15 +40,32 @@ module.exports={
                     "css-loader"
                 ]
             },
+            //less文件打包
+            {
+            test: /\.less$/,
+            use: [{
+                    loader: "style-loader" // creates style nodes from JS strings
+                }, {
+                    loader: "css-loader" // translates CSS into CommonJS
+                }, {
+                    loader: "less-loader" // compiles Less to CSS
+                }]
+            },
             //图片打包模块
             {
                 test:/\.(png|jpg|gif)/ ,
                 use:[{
                     loader:'url-loader',
                     options:{
-                        limit:500000
+                        limit:5000,
+                        outputPath:'images/'    //将图片分离到dist/images下
                     }
                 }]
+            },
+            //html中直接引入的图片进行打包
+            {
+                test: /\.(htm|html)$/i,
+                use:[ 'html-withimg-loader']
             }
         ]
     },
@@ -67,7 +93,8 @@ module.exports={
             // both options are optional
             filename: "css/[name].css",
             chunkFilename: "[id].css"
-          }) 
+        })
+        
     ],
     //配置webpack开发服务功能
     devServer:{
