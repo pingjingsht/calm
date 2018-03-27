@@ -1,9 +1,10 @@
-body{
-    background-color: rgb(0, 89, 255);
-    color: white;
+body {
+  background-color: rgb(0, 89, 255);
+  color: white;
 }
-#tupian{
-    background-image: url(http://localhost:1717/images/2eff7f084059c1e9f3f3b15f3bc13968.jpg);
-    width:200px;
-    height:100px;
+
+#tupian {
+  background-image: url(http://localhost:1717/images/2eff7f084059c1e9f3f3b15f3bc13968.jpg);
+  width: 200px;
+  height: 100px;
 }

@@ -1,7 +1,11 @@
+const entry = require('./webpack_config/entry_webpack');
 const path = require('path');
 const uglify = require('uglifyjs-webpack-plugin');
 const htmlPlugin= require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const extractTextPlugin = require("extract-text-webpack-plugin");
+const glob = require('glob');
+const PurifyCSSPlugin = require("purifycss-webpack");
+const webpack = require('webpack');
 
 //这里的build是服务启动时package.json中scripts对象传递进来的
 if(process.env.type== "build"){
@@ -15,13 +19,11 @@ if(process.env.type== "build"){
 }
 module.exports={
     devtool: 'eval-source-map',
-    //入口文件的配置项
-    entry:{
-        entry:__dirname + '/src/entry.js'
-    },
+    //入口文件的配置项（采用模块化配置）
+    entry:entry.path,
     //出口文件的配置项
     output:{
-        //打包的路径文职
+        //打包的路径位置
         path:path.resolve(__dirname,'dist'),
         //打包的文件名称
         filename:'[name].js',
@@ -34,11 +36,11 @@ module.exports={
             //CSS文件打包模块
             {
                 test: /\.css$/,
-                //use: ["style-loader", "css-loader"]//由于css分离，故启用下面的配置
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    "css-loader"
-                ]
+                //由于css分离，故启用下面的配置
+                use: extractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
+                })
             },
             //less文件打包
             {
@@ -88,11 +90,17 @@ module.exports={
         }),
         
         //css分离，这里的css/[name].css是分离后的路径位置，在dist/css/下
-        new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: "css/[name].css",
-            chunkFilename: "[id].css"
+        new extractTextPlugin("/css/[name].css"),
+
+        //去除多余css
+        new PurifyCSSPlugin({
+            // Give paths to parse for rules. These should be absolute!
+            paths: glob.sync(path.join(__dirname, 'src/*.html')),
+        }),
+        
+        //全局引入第三方类库
+        new webpack.ProvidePlugin({
+            //$:"jquery"
         })
         
     ],
